@@ -1,31 +1,56 @@
-Role Name
+Vector-role
 =========
 
-A brief description of the role goes here.
+Deliver log data to the ClickHouse database.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- OS Fedora 37 on managed nodes.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+In defaults/main.yml :
+- vector_version: "0.38.0" 
+- clickhouse_ip: ""  - external ip of vm with clickhouse.
+
+Templates
+--------------
+
+- vector.service.j2 - service vector configuration file.
+- vector.toml.j2    - vector configuration file.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Role required for full-time work:
+- [Clickhouse](https://github.com/AlexeySetevoi/ansible-clickhouse.git)
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Install role :
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- Create file ```requirements.yml``` with:
+```yaml
+- src: git@github.com:reocoker85/vector-role.git      
+  scm: git
+  version: "main"
+  name: vector-role
+```
+- use command ```ansible-galaxy install -r requirements.yml -p roles``` for downloading role in directory roles.
+
+Use role ( playbook example):
+
+```yaml
+- name: Install lighthouse
+  hosts: vector
+  become: true
+  roles:
+    - vector-role
+  tags: vector
+```
 
 License
 -------
