@@ -1,0 +1,25 @@
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+  - name: Register result 
+    stat:
+      path: "/etc/vector/vector.toml"
+    register: config_stat
+  - name: Check if vector config exists
+    assert:
+      that:
+        - config_stat.stat.exists == True
+      success_msg: "Ok"
+      fail_msg: "Houston, we have a problem"
+
+  - name: Get Vector version
+    ansible.builtin.command: vector -V
+    register: vector_version_output
+  - name: Check Version
+    ansible.builtin.assert:
+      that: 
+        - vector_version_output.stdout == "vector 0.38.0 (x86_64-unknown-linux-gnu ea0ec6f 2024-05-07 14:34:39.794027186)"
+      success_msg : "Version is valid"
+      fail_msg: "Version is wrong"
+  

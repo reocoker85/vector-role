@@ -14,5 +14,5 @@
   ansible.builtin.template:
     src: vector.service.j2
     mode: "0644"
-    dest: /etc/systemd/system/vector.service
-  notify: Restart vector service
+    dest: /etc/vector/vector.service
+#  notify: Restart vector service
